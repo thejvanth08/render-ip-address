@@ -14,16 +14,14 @@ app.use(cors({
   origin: "*"
 }));
 
-let counter = 0;
+// Trust the first proxy
+app.set('trust proxy', true);
 
-app.get("/", (req, res) => {
-  counter++;
-  res.json({ 
-    "requestCount": counter,
-    "your ip address": req.ip  
-  });
-})
-
+app.get('/', (req, res) => {
+  // Get the client's IP address
+  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  res.send(`Client IP address: ${clientIp}`);
+});
 const server = app.listen(port, console.log("server is running at port", port));
 
 server.keepAliveTimeout = 120 * 1000;
