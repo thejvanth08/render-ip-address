@@ -1,5 +1,6 @@
 const express = require("express");
 const rateLimiter = require("express-rate-limit");
+const cors = require("cors");
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -8,6 +9,10 @@ const app = express();
 //   limit: 10,
 //   message: "You exceeded your request limit"
 // }));
+
+app.use(cors({
+  origin: "*"
+}));
 
 let counter = 0;
 
@@ -19,4 +24,7 @@ app.get("/", (req, res) => {
   });
 })
 
-app.listen(port, console.log("server is running at port", port));
+const server = app.listen(port, console.log("server is running at port", port));
+
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 120 * 1000;
